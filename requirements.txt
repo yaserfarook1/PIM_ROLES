@@ -1,0 +1,6 @@
+streamlit 
+msal 
+azure-identity 
+openai 
+requests
+python-dotenv
