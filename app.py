@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 CLIENT_ID = os.getenv("CLIENT_ID")
 TENANT_ID = os.getenv("TENANT_ID")
 AUTHORITY = f"https://login.microsoftonline.com/{TENANT_ID}"
-REDIRECT_URI = "http://localhost:8501/"
+REDIRECT_URI = "https://pimroles.streamlit.app"
 SCOPES = ["User.Read", "Directory.Read.All", "Mail.Send"]
 
 # Azure OpenAI Configuration
