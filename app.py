@@ -104,13 +104,31 @@ def get_pim_roles(access_token):
         return []
 
 # Draft email with OpenAI
-def draft_email(user_name, user_id, role_name):
+def draft_email(user_name, user_id, role_name, duration_hours):
     prompt = f"""
-    Draft a professional email requesting access to a PIM role. Include the user's name, user principal ID, and the role name.
+    Draft a professional email requesting access to a PIM role. Include the user's name, user principal ID, the role name, and the requested duration in hours. The email should be concise, polite, and addressed to an admin.
 
     User Name: {user_name}
     User Principal ID: {user_id}
     Role Name: {role_name}
+    Duration: {duration_hours} hours
+
+    Example format:
+    Subject: Request for {role_name} Role Access for {duration_hours} Hours
+
+    Dear Admin,
+
+    I am requesting access to the {role_name} role for {duration_hours} hours. Below are my details:
+
+    Name: {user_name}
+    User Principal ID: {user_id}
+    Role: {role_name}
+    Duration: {duration_hours} hours
+
+    Please let me know if you need any additional information to process this request.
+
+    Thank you,
+    {user_name}
     """
     try:
         response = openai_client.chat.completions.create(
@@ -165,9 +183,12 @@ if token:
     role_names = [role["displayName"] for role in roles]
     selected_role = st.selectbox("Select a PIM Role", role_names)
 
+    # Add duration slider
+    duration_hours = st.slider("Select Duration (Hours)", min_value=1, max_value=8, value=1)
+
     if st.button("Request Access"):
         if selected_role:
-            email_content = draft_email(user_name, user_id, selected_role)
+            email_content = draft_email(user_name, user_id, selected_role, duration_hours)
             if email_content:
                 st.text_area("📧 Drafted Email", email_content, height=300)
                 if send_email(token, user_email, email_content):
@@ -176,4 +197,3 @@ if token:
                     st.error("❌ Failed to send email.")
         else:
             st.warning("Please select a role.")
-
